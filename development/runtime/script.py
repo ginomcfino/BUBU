@@ -8,7 +8,7 @@ from pick import pick
 import time
 from math import pi
 import RPi.GPIO as GPIO
-from spot_micro_kinematics_python.spot_micro_stick_figure import SpotMicroStickFigure
+#from spot_micro_kinematics_python.spot_micro_stick_figure import SpotMicroStickFigure
 
 from spotmicroai.utilities.log import Logger
 from spotmicroai.utilities.config import Config
@@ -54,7 +54,7 @@ stand_angles        = [ 75,  90, 90, 105, 90,  90, 105, 90, 90, 75, 90,  90]
 front_shoulders = [4, 0]
 back_shoulders = [8,12]
 
-sparky = SpotMicroStickFigure()
+#sparky = SpotMicroStickFigure()
 
 def set_servo_angle(s, a):
     active_servo = servo.Servo(pca.channels[servos[s][0]])
@@ -140,11 +140,13 @@ def roll_right(a):
     set_servo_angle(0, servos[0][1]+a)
     set_servo_angle(3, servos[3][1]+a)
 
-def set_body():
-    sparky.set_body_angles(theta=10*pi/180)
+# def set_body():
+#     sparky.set_body_angles(theta=10*pi/180)
 
 if __name__=="__main__":
-    stand_straight()
+    for i in list(range(12)):
+        set_servo_angle(i, 90)
+    #tand_straight()
     while(True):
         action= input("What would you like to do? ")
         if action=="sit":
