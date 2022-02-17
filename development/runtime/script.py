@@ -147,6 +147,29 @@ if __name__=="__main__":
     for i in list(range(12)):
         set_servo_angle(i, 90)
     #tand_straight()
+    time.sleep(3)
+
+    legs = [0,3,6,9]
+    for n in range(10):
+        cur_angle = 90
+        for i in list(range(20)):
+            for l in legs:
+                set_servo_angle(l, cur_angle)
+            time.sleep(0.1)
+            cur_angle+=1
+        for i in list(range(40)):
+            for l in legs:
+                set_servo_angle(l, cur_angle)
+            cur_angle-=1
+            time.sleep(0.1)
+        for i in list(range(20)):
+            for l in legs:
+                set_servo_angle(l, cur_angle)
+            cur_angle+=1
+        time.sleep(2)
+
+
+
     while(True):
         action= input("What would you like to do? ")
         if action=="sit":
