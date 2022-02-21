@@ -33,4 +33,6 @@ On boot, if someone press a button before press start, show the error properly i
 ## Other peoples builds!
 
 * User Mike R from the slack community, build the more advanced software: https://github.com/mike4192/spotMicro -> https://www.youtube.com/watch?v=S-uzWG9Z-5E. He has the moves!
-# bart
+
+
+# Quadruped, more like qua-drew-pet ;)
