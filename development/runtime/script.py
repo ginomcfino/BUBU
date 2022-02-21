@@ -46,6 +46,14 @@ pca.frequency = pca9685_frequency
 # front_right: 0, 1, 2                      = 9, 10, 11
 # servos_pos_help is meant to only help see where the above servo positions are found and nothing else
 # servos_pos_help2 is meant to only help see where the above servo positions are found and nothing else
+servo_names = {"frf":0, "frl": 1, "frs": 2,
+               "flf":4, "fll": 5, "fls": 6,
+               "rlf":8, "rll": 9, "rls": 10,
+               "rrf":12, "rrl":13, "rrs": 14}
+servo_angles = {"frf":90, "frl": 90, "frs": 90,
+               "flf":90, "fll": 90, "fls": 90,
+               "rlf":90, "rll": 90, "rls": 90,
+               "rrf":90, "rrl": 90, "rrs": 90}
 servos = [(8,90),(9,90),(10,90),(12,90),(13,90),(14,90),(4,90),(5,90),(6,90),(0,90),(1,90),(2,90)]
 servos_pos_help     = [  8,   9, 10,  12, 13,  14,   4,   5,  6,  0,   1,   2]
 servos_pos_help2    = [  0,   1,  2,   3,  4,   5,   6,   7,  8,  9,  10, 11]
@@ -56,21 +64,21 @@ back_shoulders = [8,12]
 
 sparky = SpotMicroStickFigure()
 
-def set_servo_angle(s, a):
-    active_servo = servo.Servo(pca.channels[servos[s][0]])
+def set_servo_angle(sn, a):
+    if a <=10:
+        a = 10
+    if a>=170:
+        a = 170
+    active_servo = servo.Servo(pca.channels[sn])
     active_servo.set_pulse_width_range(min_pulse=500, max_pulse=2500)
     active_servo.angle=a
-    servos[s] = (servos[s][0], a)
+    set_servo_angle(sn, a)
 
-    # Test against extreme servo positions
-    # 10 deg and 170 deg
-    # To prevent servos from breaking during movement
-    if a <= 10:
-        servos[s] = (servos[s][0], 10)
-    elif a >= 170:
-        servos[s] = (servos[s][0], 170)
-        
+def update_servo_angle(sn, a):
+    servo_angles[sn] = a
 
+def adj_servo_angle(s, a):
+    active_servo = servo.servo(pca.channels[s])        
 
 def squat(a):
     set_servo_angle(1, servos[1][1]+a)
@@ -143,8 +151,39 @@ def roll_right(a):
 def set_body():
     sparky.set_body_angles(theta=10*pi/180)
 
+def move_feet_back(side, deg):
+    if side == 0:
+        cur_angle = servo_angles["flf"]
+        set_servo_angle("flf", cur_angle)
+        set_servo_angle("rlf", cur_angle)
+        for i in range(deg):
+            cur_angle+=0.5
+            set_servo_angle("flf", cur_angle)
+            set_servo_angle("rlf", cur_angle)
+            time.sleep(0.1)
+    else:
+        cur_angle = servo_angles["frf"]
+        set_servo_angle("frf", cur_angle)
+        set_servo_angle("rrf", cur_angle)
+        for i in range(deg):
+            cur_angl-=0.5
+            set_servo_angle("frf", cur_angle)
+            set_servo_angle("rrf", cur_angle)
+            time.sleep(0.1)
+
+
 if __name__=="__main__":
-    stand_straight()
+    #stand_straight()
+
+    #initialize to 90 degree rest mode
+    for joint in servo_names.keys():
+        set_servo_angle(joint, 90)
+    time.sleep(5)
+
+    #stand up
+    move_feet_back(0, 20)
+    move_feet_back(1, 20)
+
     while(True):
         action= input("What would you like to do? ")
         if action=="sit":
