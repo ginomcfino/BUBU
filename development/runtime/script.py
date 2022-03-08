@@ -8,6 +8,7 @@ import time
 from math import pi
 import RPi.GPIO as GPIO
 import threading
+import concurrent.futures
 import numpy as np
 from spotmicroai.utilities.log import Logger
 from spotmicroai.utilities.config import Config
@@ -140,6 +141,19 @@ def get_servo_angle(sn):
 
 
 if __name__=="__main__":
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+    #     for sName in servo_names:
+    #         # executor.map(move_servo_angle, (sName, 90,))
+    #         move_servo_angle(sName, 90)
+
+    # threads = []
+    # for sn in servo_names:
+    #     t = threading.Thread(target=set_servo_angle, args=(sn, 90))
+    #     threads.append(t)
+    #     t.start()
+    # for t in threads:
+    #     t.join()
+
 
     for sName in servo_positions.keys():
         set_servo_angle(sName, 90)
