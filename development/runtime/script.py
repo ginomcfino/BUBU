@@ -8,6 +8,7 @@ import time
 from math import pi
 import RPi.GPIO as GPIO
 import threading
+import numpy as np
 from spotmicroai.utilities.log import Logger
 from spotmicroai.utilities.config import Config
 
@@ -96,15 +97,15 @@ def move_servo_angle(sn, a):
     active_servo.set_pulse_width_range(min_pulse=500, max_pulse=2500)
     cur_angle = get_servo_angle(sn)
     if a < cur_angle:
-        for angle in range(cur_angle, a-1, -1):
+        for angle in np.arange(cur_angle, a-0.1, -0.1):
             active_servo.angle = angle
             update_servo_angle(sn,angle)
-            time.sleep(0.2)
+            time.sleep(0.001)
     elif a > cur_angle:
-        for angle in range(cur_angle, a+1):
+        for angle in np.arange(cur_angle, a+0.1, 0.1):
             active_servo.angle = angle
             update_servo_angle(sn,angle)
-            time.sleep(0.2)
+            time.sleep(0.001)
     print("LOG | Servo  " + sn + " (:" + str(servo_positions[sn]) + ") at " + str(a) + " degrees")
 
 def set_servo_angle(sn, a):
