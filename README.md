@@ -1,1 +1,1 @@
-Make code from the ground up makes it state of the art. 
+It must be state of the art otherwise we wouldn't have built it from the ground up.
