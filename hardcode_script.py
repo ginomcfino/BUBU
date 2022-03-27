@@ -68,10 +68,16 @@ elbows = [leg[0] for leg in four_legs]
 inverse_joints = ['frf', 'frl', 'frs', 'rls', 'rrf', 'rrl']
 normal_joints = [n for n in servo_names if n not in inverse_joints]
 
-servo_positions = {'frf':0,'frl':1, 'frs':2,
-               'flf':4, 'fll':5, 'fls':6,
-               'rlf':10, 'rll':9, 'rls':8,
-               'rrf':14, 'rrl':13, 'rrs':12}
+# previous config:
+# servo_positions = {'frf':0,'frl':1, 'frs':2,
+#                'flf':4, 'fll':5, 'fls':6,
+#                'rlf':10, 'rll':9, 'rls':8,
+#                'rrf':14, 'rrl':13, 'rrs':12}
+
+servo_positions = {'frf':10,'frl':9, 'frs':8,
+               'flf':6, 'fll':5, 'fls':7,
+               'rlf':3, 'rll':2, 'rls':4,
+               'rrf':13, 'rrl':12, 'rrs':11}
 servo_angles = {'frf':90, 'frl':90, 'frs':90,
                'flf':90, 'fll':90, 'fls':90,
                'rlf':90, 'rll':90, 'rls':90,
