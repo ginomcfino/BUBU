@@ -84,28 +84,28 @@
 			}],
 			"front_feet_left": [{
 				"pca9685": 1,
-				"channel": 2,
+				"channel": 6,
 				"min_pulse": 500,
 				"max_pulse": 2500,
 				"rest_angle": 90
 			}],
 			"front_shoulder_right": [{
 				"pca9685": 1,
-				"channel": 3,
+				"channel": 8,
 				"min_pulse": 500,
 				"max_pulse": 2500,
 				"rest_angle": 90
 			}],
 			"front_leg_right": [{
 				"pca9685": 1,
-				"channel": 4,
+				"channel": 9,
 				"min_pulse": 500,
 				"max_pulse": 2500,
 				"rest_angle": 90
 			}],
 			"front_feet_right": [{
 				"pca9685": 1,
-				"channel": 5,
+				"channel": 10,
 				"min_pulse": 500,
 				"max_pulse": 2500,
 				"rest_angle": 90
