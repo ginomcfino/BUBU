@@ -1,4 +1,4 @@
-#!/home/pi/spotmicroai/venv/bin/python3 -u
+#!/home/pi/BUBU/venv/bin/python3 -u
 
 import busio
 from board import SCL, SDA
@@ -11,7 +11,7 @@ import threading
 import concurrent.futures
 from utilities.log import Logger
 from utilities.config import Config
-import numpy as np
+# import numpy as np
 
 
 #todo: threading to make motors move independently
@@ -74,10 +74,16 @@ normal_joints = [n for n in servo_names if n not in inverse_joints]
 #                'rlf':10, 'rll':9, 'rls':8,
 #                'rrf':14, 'rrl':13, 'rrs':12}
 
-servo_positions = {'frf':10,'frl':9, 'frs':8,
-               'flf':6, 'fll':5, 'fls':7,
-               'rlf':3, 'rll':2, 'rls':4,
-               'rrf':13, 'rrl':12, 'rrs':11}
+# servo_positions = {'frf':10,'frl':9, 'frs':8,
+#               'flf':6, 'fll':5, 'fls':7,
+#               'rlf':3, 'rll':2, 'rls':4,
+#               'rrf':13, 'rrl':12, 'rrs':11}
+
+servo_positions = {'flf':2, 'fll':3, 'fls':4,
+                   'rlf':5, 'rll':6, 'rls':7,
+                   'rrs':8, 'rrl':9, 'rrf':10,
+                   'frs':11, 'frl':12, 'frf':13}
+
 servo_angles = {'frf':90, 'frl':90, 'frs':90,
                'flf':90, 'fll':90, 'fls':90,
                'rlf':90, 'rll':90, 'rls':90,
