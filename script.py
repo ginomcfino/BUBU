@@ -11,8 +11,8 @@ import threading
 import concurrent.futures
 from utilities.log import Logger
 from utilities.config import Config
-# import numpy as np
 
+import numpy as np
 
 #todo: threading to make motors move independently
 #todo: look up pwm code to make motoros move smoothly
@@ -79,10 +79,15 @@ normal_joints = [n for n in servo_names if n not in inverse_joints]
 #               'rlf':3, 'rll':2, 'rls':4,
 #               'rrf':13, 'rrl':12, 'rrs':11}
 
-servo_positions = {'flf':2, 'fll':3, 'fls':4,
-                   'rlf':5, 'rll':6, 'rls':7,
-                   'rrs':8, 'rrl':9, 'rrf':10,
-                   'frs':11, 'frl':12, 'frf':13}
+# servo_positions = {'flf':2, 'fll':3, 'fls':4,
+#                   'rlf':5, 'rll':6, 'rls':7,
+#                   'rrs':8, 'rrl':9, 'rrf':10,
+#                   'frs':11, 'frl':12, 'frf':13}
+
+servo_positions = {'flf':14, 'fll':12, 'fls':9,
+                   'rlf':1, 'rll':3, 'rls':5,
+                   'rrs':4, 'rrl':7, 'rrf':0,
+                   'frs':8, 'frl':11, 'frf':15}
 
 servo_angles = {'frf':90, 'frl':90, 'frs':90,
                'flf':90, 'fll':90, 'fls':90,

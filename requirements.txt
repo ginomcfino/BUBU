@@ -15,7 +15,7 @@ pyserial
 pyusb
 rpi-ws281x
 RPi.GPIO
-spide
+spidev
 sysv-ipc
 typing-extensions
 numpy
