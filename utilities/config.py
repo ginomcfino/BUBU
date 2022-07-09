@@ -8,7 +8,7 @@ from pathlib import Path
 
 log = Logger().setup_logger('Configuration')
 
-json_path = './i2c_config.json'
+json_path = 'utilities/i2c_config.json'
 
 
 class Singleton(type):
