@@ -11,12 +11,11 @@ import threading
 import concurrent.futures
 from utilities.log import Logger
 from utilities.config import Config
-
 import numpy as np
 
 #todo: threading to make motors move independently
 #todo: look up pwm code to make motoros move smoothly
-#todo: find better servos that can support the robot's weight
+#todo: find better servos that can support the robot's weightc(check V)
 #todo: make walk functions (combine the move_servo functions into some kind of IK)
 #todo: make breakpoints in the code
 
@@ -28,11 +27,13 @@ pca=None
 pca9685_address = 0x40
 pca9685_reference_clock_speed = int(Config().get(
     'motion_controller[*].boards[*].pca9685_1[*].reference_clock_speed | [0] | [0] | [0]'))
+print("clock speed: " + str(pca9685_reference_clock_speed))
 pca9685_frequency = int(
     Config().get('motion_controller[*].boards[*].pca9685_1[*].frequency | [0] | [0] | [0]'))
-
+print("frequency: " + str(pca9685_frequency))
 
 gpio_port = Config().get(Config.ABORT_CONTROLLER_GPIO_PORT)
+print("port: " + str(gpio_port))
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(gpio_port, GPIO.OUT)
@@ -43,6 +44,8 @@ i2c = busio.I2C(SCL, SDA)
 
 pca = PCA9685(i2c_bus=i2c, address=pca9685_address, reference_clock_speed=pca9685_reference_clock_speed)
 pca.frequency = pca9685_frequency
+
+print("SETUP Complete.")
 
 # Some References that might be useful for coding motion of servos
 #order: 
@@ -68,7 +71,7 @@ elbows = [leg[0] for leg in four_legs]
 inverse_joints = ['frf', 'frl', 'frs', 'rls', 'rrf', 'rrl']
 normal_joints = [n for n in servo_names if n not in inverse_joints]
 
-# previous config:
+# previous configs:
 # servo_positions = {'frf':0,'frl':1, 'frs':2,
 #                'flf':4, 'fll':5, 'fls':6,
 #                'rlf':10, 'rll':9, 'rls':8,
@@ -174,7 +177,7 @@ if __name__=="__main__":
 
     for sName in servo_positions.keys():
         set_servo_angle(sName, 90)
-    print("initialization complete")
+    print("initialization: 90-degree sitting")
     print()
 
     # brk1 = input("Press any key to continue.")
