@@ -31,7 +31,6 @@ print("clock speed: " + str(pca9685_reference_clock_speed))
 pca9685_frequency = int(
     Config().get('motion_controller[*].boards[*].pca9685_1[*].frequency | [0] | [0] | [0]'))
 print("frequency: " + str(pca9685_frequency))
-
 gpio_port = Config().get(Config.ABORT_CONTROLLER_GPIO_PORT)
 print("port: " + str(gpio_port))
 
@@ -47,45 +46,24 @@ pca.frequency = pca9685_frequency
 
 print("SETUP Complete.")
 
-# Some References that might be useful for coding motion of servos
-#order: 
-# rear_left: 8, 9, 10(shoulder, leg, feet), = 0, 1, 2
-# rear_right: 12, 13, 14                    = 3, 4, 5
-# front_left: 4, 5, 6(feet, leg, shoulder)  = 6, 7, 8
-# front_right: 0, 1, 2                      = 9, 10, 11
-
 servo_names=['frf', 'frl', 'frs',
              'flf', 'fll', 'fls',
              'rlf', 'rll', 'rls',
              'rrf', 'rrl', 'rrs']
+
 front_right = servo_names[:3]
 front_left = servo_names[3:6]
 rear_left = servo_names[6:9]
 rear_right = servo_names[9:]
+
 four_legs = [front_right, front_left, rear_left, rear_right]
 shoulders = [leg[-1] for leg in four_legs]
 arms = [leg[1] for leg in four_legs]
 elbows = [leg[0] for leg in four_legs]
     
-
 inverse_joints = ['frf', 'frl', 'frs', 'rls', 'rrf', 'rrl']
 normal_joints = [n for n in servo_names if n not in inverse_joints]
 
-# previous configs:
-# servo_positions = {'frf':0,'frl':1, 'frs':2,
-#                'flf':4, 'fll':5, 'fls':6,
-#                'rlf':10, 'rll':9, 'rls':8,
-#                'rrf':14, 'rrl':13, 'rrs':12}
-
-# servo_positions = {'frf':10,'frl':9, 'frs':8,
-#               'flf':6, 'fll':5, 'fls':7,
-#               'rlf':3, 'rll':2, 'rls':4,
-#               'rrf':13, 'rrl':12, 'rrs':11}
-
-# servo_positions = {'flf':2, 'fll':3, 'fls':4,
-#                   'rlf':5, 'rll':6, 'rls':7,
-#                   'rrs':8, 'rrl':9, 'rrf':10,
-#                   'frs':11, 'frl':12, 'frf':13}
 
 servo_positions = {'flf':14, 'fll':12, 'fls':9,
                    'rlf':1, 'rll':3, 'rls':5,
@@ -96,6 +74,7 @@ servo_angles = {'frf':90, 'frl':90, 'frs':90,
                'flf':90, 'fll':90, 'fls':90,
                'rlf':90, 'rll':90, 'rls':90,
                'rrf':90, 'rrl':90, 'rrs':90}
+
 servo_limits = {'frf':90, 'frl':90, 'frs':90,
                'flf':90, 'fll':90, 'fls':90,
                'rlf':90, 'rll':90, 'rls':90,
@@ -158,7 +137,12 @@ def update_servo_angle(sn, a):
 def get_servo_angle(sn):
     return servo_angles[sn]
 
-
+def pause_motor(sn):
+    try:
+        active_servo = servo.Servo(pca.channels[servo_positions[sn]])
+        active_servo.fraction = 0
+    except:
+        print("error")
 
 if __name__=="__main__":
     # with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
@@ -174,11 +158,21 @@ if __name__=="__main__":
     # for t in threads:
     #     t.join()
 
-
-    for sName in servo_positions.keys():
-        set_servo_angle(sName, 90)
-    print("initialization: 90-degree sitting")
-    print()
+    sitting = input("type sit to make dog sit")
+    if sitting == "sit" or sitting == "SIT":
+        for sName in servo_positions.keys():
+            set_servo_angle(sName, 90)
+        print("initialization: 90-degree sitting")
+        print()
+        
+    print("NOW beginning testing loop: ")
+    command = input()
+    while command != "quit" or command != "exit":
+        if command == "release":
+            for sName in servo_positions.keys():
+                pause_motor(sName)
+            print("done")
+                
 
     # brk1 = input("Press any key to continue.")
     # print("some reandom tests: ")

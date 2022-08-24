@@ -9,7 +9,8 @@ Adafruit-PCA9685
 Adafruit-PlatformDetect
 Adafruit-PureIO
 jmespath
-pkg-resources
+# pkg-resources
+setuptools
 pyftdi
 pyserial
 pyusb
