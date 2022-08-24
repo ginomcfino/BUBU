@@ -14,10 +14,7 @@ from utilities.config import Config
 import numpy as np
 
 #todo: threading to make motors move independently
-#todo: look up pwm code to make motoros move smoothly
-#todo: find better servos that can support the robot's weightc(check V)
 #todo: make walk functions (combine the move_servo functions into some kind of IK)
-#todo: make breakpoints in the code
 
 log = Logger().setup_logger('Powering up SPARKY!')
 log.info('setup')
@@ -25,19 +22,21 @@ log.info('setup')
 
 pca=None
 pca9685_address = 0x40
-pca9685_reference_clock_speed = int(Config().get(
-    'motion_controller[*].boards[*].pca9685_1[*].reference_clock_speed | [0] | [0] | [0]'))
-print("clock speed: " + str(pca9685_reference_clock_speed))
-pca9685_frequency = int(
-    Config().get('motion_controller[*].boards[*].pca9685_1[*].frequency | [0] | [0] | [0]'))
-print("frequency: " + str(pca9685_frequency))
+
+pca9685_reference_clock_speed = int(Config().get('motion_controller[*].boards[*].pca9685_1[*].reference_clock_speed | [0] | [0] | [0]'))
+print("clock speed: " + str(pca9685_reference_clock_speed)) #25,000,000 ie 25mHz
+
+pca9685_frequency = int(Config().get('motion_controller[*].boards[*].pca9685_1[*].frequency | [0] | [0] | [0]'))
+print("frequency: " + str(pca9685_frequency)) #50
+
 gpio_port = Config().get(Config.ABORT_CONTROLLER_GPIO_PORT)
-print("port: " + str(gpio_port))
+print("abort controller: " + str(gpio_port)) # 17
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(gpio_port, GPIO.OUT)
 GPIO.output(gpio_port, False)
 time.sleep(1)
+# GPIO is completely unused
 
 i2c = busio.I2C(SCL, SDA)
 
@@ -70,43 +69,18 @@ servo_positions = {'flf':14, 'fll':12, 'fls':9,
                    'rrs':4, 'rrl':7, 'rrf':0,
                    'frs':8, 'frl':11, 'frf':15}
 
+# storing the current servo angle, init with 90
 servo_angles = {'frf':90, 'frl':90, 'frs':90,
                'flf':90, 'fll':90, 'fls':90,
                'rlf':90, 'rll':90, 'rls':90,
                'rrf':90, 'rrl':90, 'rrs':90}
 
+# needs to be calibrated to have tuple values
 servo_limits = {'frf':90, 'frl':90, 'frs':90,
                'flf':90, 'fll':90, 'fls':90,
                'rlf':90, 'rll':90, 'rls':90,
                'rrf':90, 'rrl':90, 'rrs':90}
 
-def move_servo_angle(sn, a):
-    side = 1
-    if sn in inverse_joints:
-        side = -1
-    if (a==0 or a==180):
-        if side == -1:
-            a = 180 - a
-    else:
-        a = (a * side + 180) % 180
-    if a<10:
-        a = 10
-    if a >170:
-        a = 170
-    active_servo = servo.Servo(pca.channels[servo_positions[sn]])
-    active_servo.set_pulse_width_range(min_pulse=500, max_pulse=2500)
-    cur_angle = get_servo_angle(sn)
-    if a < cur_angle:
-        for angle in np.arange(cur_angle, a-0.1, -0.1):
-            active_servo.angle = angle
-            update_servo_angle(sn,angle)
-            time.sleep(0.001)
-    elif a > cur_angle:
-        for angle in np.arange(cur_angle, a+0.1, 0.1):
-            active_servo.angle = angle
-            update_servo_angle(sn,angle)
-            time.sleep(0.001)
-    print("LOG | Servo  " + sn + " (:" + str(servo_positions[sn]) + ") at " + str(a) + " degrees")
 
 def set_servo_angle(sn, a):
     side = 1
@@ -122,27 +96,70 @@ def set_servo_angle(sn, a):
     if a >170:
         a = 170
     active_servo = servo.Servo(pca.channels[servo_positions[sn]])
-    active_servo.set_pulse_width_range(min_pulse=500, max_pulse=2500)
+    #active_servo.set_pulse_width_range(min_pulse=500, max_pulse=2500)
     active_servo.angle = a
     update_servo_angle(sn,a)
     print("LOG | Servo  " + sn + " (:" + str(servo_positions[sn]) + ") at " + str(a) + " degrees")
+
+
+def move_servo_angle(sn, a):
+    side = 1
+    if sn in inverse_joints:
+        side = -1
+    if (a==0 or a==180):
+        if side == -1:
+            a = 180 - a
+    else:
+        a = (a * side + 180) % 180
+    if a<10:
+        a = 10
+    if a >170:
+        a = 170
+    active_servo = servo.Servo(pca.channels[servo_positions[sn]])
+    #active_servo.set_pulse_width_range(min_pulse=500, max_pulse=2500)
+    cur_angle = get_servo_angle(sn)
+    if a < cur_angle:
+        for angle in np.arange(cur_angle, a-0.1, -0.1):
+            active_servo.angle = angle
+            update_servo_angle(sn,angle)
+            time.sleep(0.001)
+    elif a > cur_angle:
+        for angle in np.arange(cur_angle, a+0.1, 0.1):
+            active_servo.angle = angle
+            update_servo_angle(sn,angle)
+            time.sleep(0.001)
+    print("LOG | Servo  " + sn + " (:" + str(servo_positions[sn]) + ") at " + str(a) + " degrees")
+
 
 def set_servos_angle(sns, a):
     for sn in sns:
         set_servo_angle(sn, a)
     
+
 def update_servo_angle(sn, a):
     servo_angles[sn] = a
         
+
 def get_servo_angle(sn):
     return servo_angles[sn]
 
-def pause_motor(sn):
-    try:
-        active_servo = servo.Servo(pca.channels[servo_positions[sn]])
-        active_servo.fraction = 0
-    except:
-        print("error")
+
+""" so that doesn't work :( """
+# def pause_all_motors():
+#     pca.deinit()
+
+def crouch():
+    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+        for sName in servo_names:
+            executor.submit(move_servo_angle,sn=sName, a=75)
+
+        executor.shutdown()
+
+def sit():
+    for sName in servo_positions.keys():
+        set_servo_angle(sName, 90)
+
+
 
 if __name__=="__main__":
     # with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
@@ -157,21 +174,22 @@ if __name__=="__main__":
     #     t.start()
     # for t in threads:
     #     t.join()
+    
 
-    sitting = input("type sit to make dog sit")
-    if sitting == "sit" or sitting == "SIT":
-        for sName in servo_positions.keys():
-            set_servo_angle(sName, 90)
-        print("initialization: 90-degree sitting")
-        print()
-        
     print("NOW beginning testing loop: ")
     command = input()
-    while command != "quit" or command != "exit":
-        if command == "release":
-            for sName in servo_positions.keys():
-                pause_motor(sName)
+    while not (command == "quit" or command == "exit"):
+        if command == "release": #release
+            pause_all_motors()
             print("done")
+        elif command == "crouch": #crouch
+            crouch()
+            print("BUBU crouching")
+        elif command == "sit" or command == "SIT": #sit
+            sit()
+            print("BUBU sitting")
+        
+        command = input("next: ")
                 
 
     # brk1 = input("Press any key to continue.")
