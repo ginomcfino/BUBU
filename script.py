@@ -11,14 +11,10 @@ from utilities.log import Logger
 from utilities.config import Config
 import numpy as np
 
-#todo: threading to make motors move independently
+#todo: threading to make motors move independently (check!)
 #todo: make walk functions (combine the move_servo functions into some kind of IK)
 
-#log = Logger().setup_logger('Powering up SPARKY!')
-#log.info('setup')
-
-
-pca = pca()
+pca = pca() # initializing the servo hat
 
 servo_names=['frf', 'frl', 'frs',
              'flf', 'fll', 'fls',
@@ -133,7 +129,69 @@ def crouch():
 def sit():
     for sName in servo_positions.keys():
         set_servo_angle(sName, 90)
+        
 
+def standup_routine_1():
+    bk = input("press enter to begin: ")
+    
+    for sname in ['flf', 'frf']:
+        set_servo_angle(sname, 150)
+    for sname in ['rlf', 'rrf']:
+        set_servo_angle(sname, 110)
+        
+    bk = input("press enter...")
+
+    set_servos_angle(arms, 120)
+    set_servos_angle(['rlf', 'rrf'], 90)
+
+    bk = input("press enter...")
+
+    set_servos_angle(['rll','rrl'], 140)
+    set_servos_angle(['rlf','rrf'], 70)
+
+    bk = input("press enter...")
+
+    set_servos_angle(['fll','frl'], 140)
+    set_servos_angle(['flf','frf'], 70)
+
+    bk = input('press enter...')
+
+    set_servos_angle(arms, 120)
+    set_servos_angle(elbows, 120)
+    
+def shake_1():
+    for sname in shoulders:
+        set_servo_angle(sname, 100)
+    time.sleep(1)
+    for sname in shoulders:
+        set_servo_angle(sname, 90)
+    time.sleep(1)
+    for sname in ['fls','rls']:
+        set_servo_angle(sname, 110)
+    for sname in ['frs','rrs']:
+        set_servo_angle(sname, 70)
+    time.sleep(1)
+    for sname in ['fls','rls']:
+        set_servo_angle(sname, 70)
+    for sname in ['frs','rrs']:
+        set_servo_angle(sname, 110)
+    time.sleep(1)
+    for sname in ['fls','rls']:
+        set_servo_angle(sname, 90)
+    for sname in ['frs','rrs']:
+        set_servo_angle(sname, 90)
+    brk = input("press enter....")
+    set_servos_angle(['fls','rrs'], 80)
+    set_servos_angle(['frs','rls'], 100)
+    time.sleep(1)
+    set_servo_angle('fll', 80)
+    set_servo_angle('flf', 90)
+    brk = input('press enter...')
+    move_servo_angle('fll', 70)
+    move_servo_angle('fll', 110)
+    move_servo_angle('fll', 90)
+    print()
+    print(servo_angles)
 
 
 if __name__=="__main__":
@@ -152,19 +210,19 @@ if __name__=="__main__":
     
 
     print("NOW beginning testing loop: ")
-    command = input()
+    command = input("available commands: \ncrouch | sit | stand1 | shake1 \n")
     while not (command == "quit" or command == "exit"):
-        if command == "release": #release
-            pause_all_motors()
-            print("done")
-        elif command == "crouch": #crouch
+        if command == "crouch": #crouch
             crouch()
             print("BUBU crouching")
         elif command == "sit" or command == "SIT": #sit
             sit()
             print("BUBU sitting")
-        
-        command = input("next: ")
+        elif command == "stand1":
+            standup_routine_1()
+        elif command == "shake1":
+            shake_1()
+        command = input("available commands: \ncrouch | sit | stand1 | shake1 \n")
                 
 
     # brk1 = input("Press any key to continue.")
@@ -200,35 +258,6 @@ if __name__=="__main__":
     #     set_servo_angle(sname, 90)
     #     time.sleep(.5)
     # print("articulation test complete")
-
-    cmd1 = input("press Y to initiate stnad up routine, press anything else to abort.")
-    if str(cmd1)=='Y' or str(cmd1)=='y':
-        time.sleep(1)
-
-        for sname in ['flf', 'frf']:
-            set_servo_angle(sname, 150)
-        for sname in ['rlf', 'rrf']:
-            set_servo_angle(sname, 110)
-        
-        bk = input("press enter...")
-
-        set_servos_angle(arms, 120)
-        set_servos_angle(['rlf', 'rrf'], 90)
-
-        bk = input("press enter...")
-
-        set_servos_angle(['rll','rrl'], 140)
-        set_servos_angle(['rlf','rrf'], 70)
-
-        bk = input("press enter...")
-
-        set_servos_angle(['fll','frl'], 140)
-        set_servos_angle(['flf','frf'], 70)
-
-        bk = input('press enter...')
-
-        set_servos_angle(arms, 120)
-        set_servos_angle(elbows, 120)
 
     cmd2 = input('press Y to initiate body twist (?), any other key to continue.')
     if str(cmd2)=='Y' or str(cmd2)=='y':

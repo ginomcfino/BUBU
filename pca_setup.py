@@ -7,7 +7,7 @@ def pca():
     pca=None
 
     pca9685_address = 0x40
-    print("pca address: " + str(pca9685_address))
+    print("pca address: " + str(pca9685_address)) #0x40
 
     pca9685_reference_clock_speed = 25000000
     print("clock speed: " + str(pca9685_reference_clock_speed)) #25,000,000 ie 25mHz
