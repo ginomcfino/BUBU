@@ -1,8 +1,6 @@
 #!/home/pi/BUBU/venv/bin/python3 -u
 
-import busio
-from board import SCL, SDA
-from adafruit_pca9685 import PCA9685
+from pca_setup import *
 from adafruit_motor import servo as servo
 import time
 from math import pi
@@ -16,34 +14,11 @@ import numpy as np
 #todo: threading to make motors move independently
 #todo: make walk functions (combine the move_servo functions into some kind of IK)
 
-log = Logger().setup_logger('Powering up SPARKY!')
-log.info('setup')
+#log = Logger().setup_logger('Powering up SPARKY!')
+#log.info('setup')
 
 
-pca=None
-pca9685_address = 0x40
-
-pca9685_reference_clock_speed = int(Config().get('motion_controller[*].boards[*].pca9685_1[*].reference_clock_speed | [0] | [0] | [0]'))
-print("clock speed: " + str(pca9685_reference_clock_speed)) #25,000,000 ie 25mHz
-
-pca9685_frequency = int(Config().get('motion_controller[*].boards[*].pca9685_1[*].frequency | [0] | [0] | [0]'))
-print("frequency: " + str(pca9685_frequency)) #50
-
-gpio_port = Config().get(Config.ABORT_CONTROLLER_GPIO_PORT)
-print("abort controller: " + str(gpio_port)) # 17
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(gpio_port, GPIO.OUT)
-GPIO.output(gpio_port, False)
-time.sleep(1)
-# GPIO is completely unused
-
-i2c = busio.I2C(SCL, SDA)
-
-pca = PCA9685(i2c_bus=i2c, address=pca9685_address, reference_clock_speed=pca9685_reference_clock_speed)
-pca.frequency = pca9685_frequency
-
-print("SETUP Complete.")
+pca = pca()
 
 servo_names=['frf', 'frl', 'frs',
              'flf', 'fll', 'fls',
