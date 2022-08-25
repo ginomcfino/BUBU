@@ -12,6 +12,7 @@ from utilities.config import Config
 import numpy as np
 
 #todo: threading to make motors move independently (check!)
+#todo: make SparkyBUBU class for Object-Oriented Control!
 #todo: make walk functions (combine the move_servo functions into some kind of IK)
 
 pca = pca() # initializing the servo hat
@@ -114,10 +115,6 @@ def update_servo_angle(sn, a):
 def get_servo_angle(sn):
     return servo_angles[sn]
 
-
-""" so that doesn't work :( """
-# def pause_all_motors():
-#     pca.deinit()
 
 def crouch():
     with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
@@ -223,76 +220,8 @@ if __name__=="__main__":
         elif command == "shake1":
             shake_1()
         command = input("available commands: \ncrouch | sit | stand1 | shake1 \n")
-                
-
-    # brk1 = input("Press any key to continue.")
-    # print("some reandom tests: ")
-    # time.sleep(1)
-    # for i in range(10):
-    #     for leg in four_legs:
-    #         for n in leg:
-    #             set_servo_angle(n, 80)
-    #         time.sleep(2)
-    #         for n in leg:
-    #             set_servo_angle(n, 100)
-    #         time.sleep(2)
-    #         for n in leg:
-    #             set_servo_angle(n, 90)
-    #         time.sleep(2)
-    # print("done with random tests")
-    # print()
-
-    # brk2 = input('Press any key to begin full articulation test, or enter a number betweeen 0-90 for articulation range.')
-    # try: 
-    #     val = 90 - (int(brk2) % 90)
-    # except ValueError:
-    #     val = 75
-    # val_max = 180 - val
-    # if val == 0:
-    #     val_max-=1 
-    # for sname in servo_positions.keys():
-    #     set_servo_angle(sname, val)
-    #     time.sleep(.5)
-    #     set_servo_angle(sname, val_max)
-    #     time.sleep(.5)
-    #     set_servo_angle(sname, 90)
-    #     time.sleep(.5)
-    # print("articulation test complete")
-
-    cmd2 = input('press Y to initiate body twist (?), any other key to continue.')
-    if str(cmd2)=='Y' or str(cmd2)=='y':
-        for sname in shoulders:
-            set_servo_angle(sname, 100)
-        # time.sleep(1)
-        # for sname in shoulders:
-        #     set_servo_angle(sname, 80)
-        time.sleep(1)
-        for sname in shoulders:
-            set_servo_angle(sname, 90)
-        time.sleep(1)
-        for sname in ['fls','rls']:
-            set_servo_angle(sname, 110)
-        for sname in ['frs','rrs']:
-            set_servo_angle(sname, 70)
-        time.sleep(1)
-        for sname in ['fls','rls']:
-            set_servo_angle(sname, 70)
-        for sname in ['frs','rrs']:
-            set_servo_angle(sname, 110)
-        time.sleep(1)
-        for sname in ['fls','rls']:
-            set_servo_angle(sname, 90)
-        for sname in ['frs','rrs']:
-            set_servo_angle(sname, 90)
-        brk = input("press enter....")
-        set_servos_angle(['fls','rrs'], 80)
-        set_servos_angle(['frs','rls'], 100)
-        time.sleep(1)
-        set_servo_angle('fll', 80)
-        set_servo_angle('flf', 90)
-        brk = input('press enter...')
-        move_servo_angle('fll', 70)
-        move_servo_angle('fll', 110)
-        move_servo_angle('fll', 90)
-        print()
-        print(servo_angles)
+        
+        
+        
+        
+        
