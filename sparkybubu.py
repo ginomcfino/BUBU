@@ -95,6 +95,7 @@ class SparkyBUBU(object):
                 time.sleep(interval)
         print("LOG | Servo  " + sn + " (:" + str(self.servo_positions[sn]) + ") at " + str(a) + " degrees")
 
+
     # def move_servos_angle(self, sns, a):
     #     with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
     #         for sName in sns:
@@ -109,8 +110,6 @@ class SparkyBUBU(object):
             t.start()
         for t in threads:
             t.join()
-
-
 
 
 
