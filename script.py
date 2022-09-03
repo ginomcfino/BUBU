@@ -30,8 +30,7 @@ if __name__=="__main__":
             bubu.set_servo_angle(sn, int(a))
         elif command == "dance":
             uptown_spot(bubu)
-            
-        time.sleep(1)
+
         command = input("available commands: \ncrouch | sit | stand1 | shake1 | testsevo \ndance | ")
         
         

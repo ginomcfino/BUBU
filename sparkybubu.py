@@ -39,15 +39,20 @@ class SparkyBUBU(object):
                     'flf':90, 'fll':90, 'fls':90,
                     'rlf':90, 'rll':90, 'rls':90,
                     'rrf':90, 'rrl':90, 'rrs':90}
+        self.angle_rate = 0.1
+        self.sleep_interval = 0.01
         # needs to be calibrated to have tuple values
         # self.servo_limits = {'frf':90, 'frl':90, 'frs':90,
         #             'flf':90, 'fll':90, 'fls':90,
         #             'rlf':90, 'rll':90, 'rls':90,
         #             'rrf':90, 'rrl':90, 'rrs':90}
 
+    def set_speed(self, da, ds):
+        self.angle_rate = da
+        self.sleep_interval = ds
+
     def update_servo_angle(self, sn, a):
         self.servo_angles[sn] = a
-            
 
     def get_servo_angle(self, sn):
         return self.servo_angles[sn]
@@ -79,20 +84,20 @@ class SparkyBUBU(object):
         for sn in sns:
             self.set_servo_angle(sn, a)
 
-    def move_servo_angle(self, sn, a, interval): #interval in seconds
+    def move_servo_angle(self, sn, a): #interval in seconds
         a = self.__test_limit(sn, a)
         active_servo = servo.Servo(self.pca.channels[self.servo_positions[sn]])
         cur_angle = self.get_servo_angle(sn)
         if a < cur_angle:
-            for angle in np.arange(cur_angle, a-0.1, -0.1):
+            for angle in np.arange(cur_angle, a-self.angle_rate, -1 *self.angle_rate):
                 active_servo.angle = angle
                 self.update_servo_angle(sn,angle)
-                time.sleep(interval)
+                time.sleep(self.sleep_interval)
         elif a > cur_angle:
-            for angle in np.arange(cur_angle, a+0.1, 0.1):
+            for angle in np.arange(cur_angle, a+self.angle_rate, self.angle_rate):
                 active_servo.angle = angle
                 self.update_servo_angle(sn,angle)
-                time.sleep(interval)
+                time.sleep(self.sleep_interval)
         print("LOG | Servo  " + sn + " (:" + str(self.servo_positions[sn]) + ") at " + str(a) + " degrees")
 
 
@@ -102,19 +107,19 @@ class SparkyBUBU(object):
     #             executor.submit(self.move_servo_angle, sn=sName, a=a, interval = 0.001)
     #         # executor.shutdown()
 
-    def move_servos_angle(self, sns, a, interval=0.01):
+    def move_servos_angle(self, sns, a):
         threads = []
         for sn in sns:
-            t = threading.Thread(target=self.move_servo_angle, args=(sn, a, interval))
+            t = threading.Thread(target=self.move_servo_angle, args=(sn, a))
             threads.append(t)
             t.start()
         for t in threads:
             t.join()
 
-    def move_servos(self, positions, interval=0.01):
+    def move_servos(self, positions):
         threads = []
         for sn in positions.keys():
-            t = threading.Thread(target=self.move_servo_angle, args=(sn, positions[sn], interval))
+            t = threading.Thread(target=self.move_servo_angle, args=(sn, positions[sn]))
             threads.append(t)
             t.start()
         for t in threads:

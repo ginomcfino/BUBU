@@ -17,7 +17,7 @@ def uptown_spot(robot):
                     'flf':30, 'fll':150, 'fls':75,
                     'rlf':30, 'rll':150, 'rls':75,
                     'rrf':30, 'rrl':150, 'rrs':75}
-    robot.move_servos(stand_angles, 0.001)
+    robot.move_servos(stand_angles)
 
 
 # below functions should take in a robot object
@@ -29,7 +29,7 @@ def crouch(robot):
                     'flf':30, 'fll':150, 'fls':75,
                     'rlf':30, 'rll':150, 'rls':75,
                     'rrf':30, 'rrl':150, 'rrs':75}
-    robot.move_servos(stand_angles, 0.001)
+    robot.move_servos(stand_angles)
 
 def sit(robot):
     sns = [s for s in robot.servo_names]
@@ -91,8 +91,8 @@ def shake_1(robot):
     robot.set_servo_angle('fll', 80)
     robot.set_servo_angle('flf', 90)
     brk = input('press enter...')
-    robot.move_servo_angle('fll', 70, 0.005)
-    robot.move_servo_angle('fll', 110, 0.005)
-    robot.move_servo_angle('fll', 90, 0.005)
+    robot.move_servo_angle('fll', 70)
+    robot.move_servo_angle('fll', 110)
+    robot.move_servo_angle('fll', 90)
     print()
     print(robot.servo_angles)
