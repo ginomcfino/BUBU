@@ -1,6 +1,7 @@
 #!/home/pi/BUBU/venv/bin/python3 -u
 
-from sparkybubu import *
+from sparkybubu import SparkyBUBU
+from routines import *
 
 #todo: make SparkyBUBU class for Object-Oriented Control!
 #todo: make walk functions (combine the move_servo functions into some kind of IK)
@@ -11,7 +12,7 @@ if __name__=="__main__":
     bubu = SparkyBUBU()
 
     print("NOW beginning testing loop: ")
-    command = input("available commands: \ncrouch | sit | stand1 | shake1 | testservo \n")
+    command = input("available commands: \ncrouch | sit | stand1 | shake1 | testservo \ndance | ")
     while not (command == "quit" or command == "exit"):
         if command == "crouch": #crouch
             crouch(bubu)
@@ -27,7 +28,11 @@ if __name__=="__main__":
             sn = input("which servo? ")
             a = input("to what angle? ")
             bubu.set_servo_angle(sn, int(a))
-        command = input("available commands: \ncrouch | sit | stand1 | shake1 \n")
+        elif command == "dance":
+            uptown_spot(bubu)
+            
+        time.sleep(1)
+        command = input("available commands: \ncrouch | sit | stand1 | shake1 | testsevo \ndance | ")
         
         
         
